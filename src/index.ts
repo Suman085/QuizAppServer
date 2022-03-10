@@ -64,7 +64,3 @@ io.on("connection", (socket) => {
       io.to(user.quizId).emit("allUsers", { users: getAllUsers(user.quizId) });
   });
 });
-
-server.listen(8000, () => {
-  console.log("listening on *:8000");
-});

@@ -5,10 +5,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var socket_io_1 = require("socket.io");
 var http_1 = __importDefault(require("http"));
+var express_1 = __importDefault(require("express"));
 var users_1 = require("./users");
+var app = (0, express_1.default)();
+app.use(express_1.default.static(__dirname + "/"));
 // Note: manage connections... not users. :D
-var server = http_1.default.createServer();
+var server = http_1.default.createServer(app);
 var io = new socket_io_1.Server(server);
+app.get("/", function (req, res) {
+    res.send("hello world");
+});
+server.listen(process.env.PORT || 5000);
 io.on("connection", function (socket) {
     socket.on("disconnect", function () {
         var user = (0, users_1.removeUser)(socket.id);
@@ -51,7 +58,4 @@ io.on("connection", function (socket) {
         if (user)
             io.to(user.quizId).emit("allUsers", { users: (0, users_1.getAllUsers)(user.quizId) });
     });
-});
-server.listen(8000, function () {
-    console.log("listening on *:8000");
 });
